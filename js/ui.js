@@ -233,4 +233,3 @@
             drawCharPreview('prevMale', 'male');
             drawCharPreview('prevFemale', 'female');
         });
-    </script>

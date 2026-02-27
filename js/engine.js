@@ -1,26 +1,26 @@
         // ── INPUT STATE ──
-        const keys = {};
-        const heldKeys = { left: false, right: false, up: false, down: false };
+        var keys = {};
+        var heldKeys = { left: false, right: false, up: false, down: false };
 
         document.addEventListener('keydown', e => {
             keys[e.key] = true;
             if (e.key === ' ' || e.key === 'Enter') advanceDialogue();
             if (['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', ' '].includes(e.key)) e.preventDefault();
-            if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') { heldKeys.left = true; document.getElementById('kL').classList.add('active-key'); }
-            if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') { heldKeys.right = true; document.getElementById('kR').classList.add('active-key'); }
-            if (e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W') { heldKeys.up = true; document.getElementById('kU').classList.add('active-key'); }
-            if (e.key === 'ArrowDown' || e.key === 's' || e.key === 'S') { heldKeys.down = true; document.getElementById('kD').classList.add('active-key'); }
+            if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') { heldKeys.left = true; if(document.getElementById('kL')) document.getElementById('kL').classList.add('active-key'); }
+            if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') { heldKeys.right = true; if(document.getElementById('kR')) document.getElementById('kR').classList.add('active-key'); }
+            if (e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W') { heldKeys.up = true; if(document.getElementById('kU')) document.getElementById('kU').classList.add('active-key'); }
+            if (e.key === 'ArrowDown' || e.key === 's' || e.key === 'S') { heldKeys.down = true; if(document.getElementById('kD')) document.getElementById('kD').classList.add('active-key'); }
         });
         document.addEventListener('keyup', e => {
             keys[e.key] = false;
-            if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') { heldKeys.left = false; document.getElementById('kL').classList.remove('active-key'); }
-            if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') { heldKeys.right = false; document.getElementById('kR').classList.remove('active-key'); }
-            if (e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W') { heldKeys.up = false; document.getElementById('kU').classList.remove('active-key'); }
-            if (e.key === 'ArrowDown' || e.key === 's' || e.key === 'S') { heldKeys.down = false; document.getElementById('kD').classList.remove('active-key'); }
+            if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') { heldKeys.left = false; if(document.getElementById('kL')) document.getElementById('kL').classList.remove('active-key'); }
+            if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') { heldKeys.right = false; if(document.getElementById('kR')) document.getElementById('kR').classList.remove('active-key'); }
+            if (e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W') { heldKeys.up = false; if(document.getElementById('kU')) document.getElementById('kU').classList.remove('active-key'); }
+            if (e.key === 'ArrowDown' || e.key === 's' || e.key === 'S') { heldKeys.down = false; if(document.getElementById('kD')) document.getElementById('kD').classList.remove('active-key'); }
         });
 
         const WALK_LERP = 0.055, WALK_ARRIVE_THRESH = 1.5, STEP_DELAY = 185;
-        let lastTime = 0, lastStepTime = 0, isWalking = false;
+        var lastTime = 0, lastStepTime = 0, isWalking = false;
 
         function gameLoop(ts) {
             requestAnimationFrame(gameLoop);
@@ -96,11 +96,7 @@
             }
         }
 
-        // ═══════════════════════════════════════════════════════
-        //  CANVAS INIT (called from startGame)
-        // ═══════════════════════════════════════════════════════
         function initCanvasLegacy() {
-            // Old isometric init replaced — top-down initCanvas defined above
             window.addEventListener('resize', () => {
                 if (!canvas) return;
                 W = canvas.width = canvas.offsetWidth; H = canvas.height = canvas.offsetHeight;
@@ -108,4 +104,3 @@
             requestAnimationFrame(gameLoop);
             startAmbient();
         }
-
