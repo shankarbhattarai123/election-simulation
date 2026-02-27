@@ -1,0 +1,1026 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>मतदान दिन: फागुन २१, २०८२ बि.सं.</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Crimson+Pro:ital,wght@0,400;0,600;1,400&family=Share+Tech+Mono&family=Tiro+Devanagari+Hindi:ital@0;1&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body>
+    <div id="veil"></div>
+    <canvas id="gameCanvas"></canvas>
+
+    <!-- HUD -->
+    <div id="hud" class="hidden">
+        <div class="hud-box">
+            <div class="hud-label">मतदाता</div>
+            <div class="hud-val" id="hudName">—</div>
+        </div>
+        <div id="phaseTrack">
+            <div class="ph-dot active" id="pd0"></div>
+            <div class="ph-dot" id="pd1"></div>
+            <div class="ph-dot" id="pd2"></div>
+            <div class="ph-dot" id="pd3"></div>
+            <div class="ph-dot" id="pd4"></div>
+            <div class="ph-dot" id="pd5"></div>
+        </div>
+        <div class="hud-box" style="text-align:right">
+            <div class="hud-label">चरण</div>
+            <div class="hud-val" id="hudPhase">पंक्ति</div>
+        </div>
+    </div>
+    <div id="stepBar" class="hidden">
+        <div class="step-inner">
+            <div class="step-dot"></div>
+            <div class="step-text" id="stepText">हिँड्नको लागि तीर किज वा WASD थिच्नुहोस्</div>
+        </div>
+    </div>
+    <div id="keysHint" class="hidden">
+        <div class="keys-box">
+            <div></div>
+            <div class="key" id="kU">▲</div>
+            <div></div>
+            <div class="key" id="kL">◀</div>
+            <div class="key" style="font-size:8px;color:#7a6a50">OK</div>
+            <div class="key" id="kR">▶</div>
+            <div></div>
+            <div class="key" id="kD">▼</div>
+            <div></div>
+        </div>
+        <div
+            style="font-family:'Share Tech Mono',monospace;font-size:8px;color:#444;text-align:center;margin-top:4px;letter-spacing:0.1em">
+            WASD / तीर किज</div>
+    </div>
+
+    <!-- DIALOGUE -->
+    <div id="dialogueBox" class="hidden">
+        <div class="dlg-inner">
+            <div class="dlg-face" id="dlgFace">👮</div>
+            <div class="dlg-speaker" id="dlgSpeaker">Officer</div>
+            <div class="dlg-text" id="dlgText">Namaste.</div>
+            <div class="dlg-continue">▶ SPACE / थिच्नुहोस्</div>
+        </div>
+    </div>
+
+    <!-- ===== TITLE ===== -->
+    <div class="screen" id="titleScreen">
+        <div class="title-particles" id="particles"></div>
+        <div class="title-emblem">
+            <svg width="140" height="140" viewBox="0 0 140 140" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <radialGradient id="eg" cx="50%" cy="50%" r="50%">
+                        <stop offset="0%" stop-color="#f0d040" />
+                        <stop offset="60%" stop-color="#d4a017" />
+                        <stop offset="100%" stop-color="#906010" />
+                    </radialGradient>
+                    <filter id="glow">
+                        <feGaussianBlur stdDeviation="3" result="b" />
+                        <feMerge>
+                            <feMergeNode in="b" />
+                            <feMergeNode in="SourceGraphic" />
+                        </feMerge>
+                    </filter>
+                </defs>
+                <circle cx="70" cy="70" r="67" fill="none" stroke="url(#eg)" stroke-width="1.5" filter="url(#glow)"
+                    opacity="0.8" />
+                <circle cx="70" cy="70" r="59" fill="none" stroke="#805010" stroke-width="0.5" />
+                <!-- Ashoka Wheel -->
+                <circle cx="70" cy="70" r="22" fill="none" stroke="url(#eg)" stroke-width="2.2" filter="url(#glow)" />
+                <circle cx="70" cy="70" r="5.5" fill="#d4a017" />
+                <g stroke="url(#eg)" stroke-width="1.4" filter="url(#glow)">
+                    <line x1="70" y1="48" x2="70" y2="92" />
+                    <line x1="48" y1="70" x2="92" y2="70" />
+                    <line x1="54.4" y1="54.4" x2="85.6" y2="85.6" />
+                    <line x1="85.6" y1="54.4" x2="54.4" y2="85.6" />
+                    <line x1="50" y1="62" x2="90" y2="78" opacity="0.65" />
+                    <line x1="50" y1="78" x2="90" y2="62" opacity="0.65" />
+                    <line x1="62" y1="50" x2="78" y2="90" opacity="0.65" />
+                    <line x1="78" y1="50" x2="62" y2="90" opacity="0.65" />
+                </g>
+                <text x="70" y="22" text-anchor="middle" fill="#d4a017" font-size="11" filter="url(#glow)">★</text>
+                <text x="70" y="124" text-anchor="middle" fill="#d4a017" font-size="11" filter="url(#glow)">★</text>
+                <text x="118" y="74" text-anchor="middle" fill="#d4a017" font-size="11" filter="url(#glow)">★</text>
+                <text x="22" y="74" text-anchor="middle" fill="#d4a017" font-size="11" filter="url(#glow)">★</text>
+            </svg>
+        </div>
+        <div class="title-sub" style="z-index:1;position:relative">निर्वाचन आयोग, नेपाल</div>
+        <h1 class="title-h1">मतदान दिन</h1>
+        <div class="title-date">फागुन २१, २०८२ बि.सं.</div>
+        <div class="gold-line"></div>
+        <p class="title-desc">नेपालको वास्तविक मतदान केन्द्रमा हिँडेर आफ्नो लोकतान्त्रिक मत खसाल्नुहोस् — एक
+            अन्तरक्रियात्मक सिमुलेसन।</p>
+        <button class="btn btn-gold" onclick="fadeToScreen('charScreen')" style="z-index:1;position:relative">▶
+            &nbsp;सिमुलेसन सुरु गर्नुहोस्</button>
+        <div style="margin-top:14px;z-index:1;position:relative;display:flex;gap:12px">
+            <button class="btn btn-ghost" onclick="toggleMute()">🔊 <span id="muteLabel">आवाज चालू</span></button>
+        </div>
+    </div>
+
+    <!-- ===== CHARACTER SELECT ===== -->
+    <div class="screen hidden" id="charScreen">
+        <div class="screen-tag">चरण १ / ६ — मतदाता परिचय</div>
+        <div class="screen-title">आफ्नो पात्र छान्नुहोस्</div>
+        <div class="char-grid">
+            <div class="char-card" id="cM" onclick="selectChar('male')">
+                <canvas class="char-canvas" id="prevMale" width="100" height="120"></canvas>
+                <div class="char-name-big">राम बहादुर</div>
+                <div class="char-meta">पुरुष · वडा ४ · #२८४७</div>
+            </div>
+            <div class="char-card" id="cF" onclick="selectChar('female')">
+                <canvas class="char-canvas" id="prevFemale" width="100" height="120"></canvas>
+                <div class="char-name-big">सीता देवी</div>
+                <div class="char-meta">महिला · वडा ४ · #२८४८</div>
+            </div>
+        </div>
+        <button class="btn btn-gold" id="btnStartGame" onclick="startGame()"
+            style="opacity:0.38;pointer-events:none;z-index:1;position:relative">मतदान केन्द्र प्रवेश →</button>
+        <div style="margin-top:14px;z-index:1;position:relative"><button class="btn btn-ghost"
+                onclick="fadeToScreen('titleScreen')">← फिर्ता</button></div>
+    </div>
+
+    <!-- ===== BOOTH MODALS ===== -->
+
+    <!-- STEP 2: ID Verification — Police Checkpoint -->
+    <div class="booth-modal hidden" id="mID">
+        <div class="police-panel">
+
+            <!-- Command strip -->
+            <div class="police-topbar">
+                <div class="police-lights">
+                    <div class="police-light red"></div>
+                    <div class="police-light blue"></div>
+                    <div class="police-light red"></div>
+                </div>
+                <span class="police-title-text">⚠ परिचय प्रमाणीकरण केन्द्र — मतदान सुरक्षा</span>
+                <div class="police-lights">
+                    <div class="police-light blue"></div>
+                    <div class="police-light red"></div>
+                    <div class="police-light blue"></div>
+                </div>
+            </div>
+
+            <!-- Two-column: officer | verify -->
+            <div class="checkpoint-scene">
+
+                <!-- Officer side -->
+                <div class="officer-side">
+                    <div class="officer-avatar">👮</div>
+                    <div class="officer-name">अधिकृत प्रसाद</div>
+                    <div class="officer-rank">वरिष्ठ निरीक्षक</div>
+                    <div class="officer-speech">"मतदान केन्द्रमा स्वागत छ। प्रवेश अघि परिचय प्रमाणीकरण अनिवार्य छ।"
+                    </div>
+                </div>
+
+                <!-- Right column -->
+                <div class="verify-steps-col">
+
+                    <!-- Compact ID card -->
+                    <div class="id-card-compact">
+                        <div class="idc-row">
+                            <div class="idc-flag">
+                                <div style="background:#003893"></div>
+                                <div style="background:#dc143c"></div>
+                                <div style="background:#003893"></div>
+                            </div>
+                            <div class="idc-text">
+                                <div class="idc-header">निर्वाचन आयोग, नेपाल — मतदाता परिचयपत्र</div>
+                                <div class="idc-name" id="idCardName">राम बहादुर थापा</div>
+                                <div class="idc-num" id="idCardNum">मतदाता नं: ०००/०४/२८४७</div>
+                                <div class="idc-meta">वडा: ४ · काठमाडौं-३ · WD-04-KTMG3 · जन्म: २०३८-०६-१५</div>
+                            </div>
+                            <div class="idc-chip"></div>
+                        </div>
+                    </div>
+
+                    <!-- Steps -->
+                    <div class="verify-section-label">प्रमाणीकरण प्रक्रिया</div>
+                    <div class="vsteps">
+                        <div class="vstep" id="vs1">
+                            <div class="vstep-icon">🪪</div>
+                            <div class="vstep-body">
+                                <div class="vstep-label">परिचयपत्र बारकोड स्क्यान</div>
+                                <div class="vstep-bar">
+                                    <div class="vstep-fill" id="vf1"></div>
+                                </div>
+                            </div>
+                            <div class="vstep-status" id="vst1">—</div>
+                        </div>
+                        <div class="vstep" id="vs2">
+                            <div class="vstep-icon">👆</div>
+                            <div class="vstep-body">
+                                <div class="vstep-label">बायोमेट्रिक औंठाछाप मिलान</div>
+                                <div class="vstep-bar">
+                                    <div class="vstep-fill" id="vf2"></div>
+                                </div>
+                            </div>
+                            <div class="vstep-status" id="vst2">—</div>
+                        </div>
+                        <div class="vstep" id="vs3">
+                            <div class="vstep-icon">👁️</div>
+                            <div class="vstep-body">
+                                <div class="vstep-label">अनुहार पहिचान प्रणाली</div>
+                                <div class="vstep-bar">
+                                    <div class="vstep-fill" id="vf3"></div>
+                                </div>
+                            </div>
+                            <div class="vstep-status" id="vst3">—</div>
+                        </div>
+                        <div class="vstep" id="vs4">
+                            <div class="vstep-icon">📋</div>
+                            <div class="vstep-body">
+                                <div class="vstep-label">मतदाता नामावली सत्यापन</div>
+                                <div class="vstep-bar">
+                                    <div class="vstep-fill" id="vf4"></div>
+                                </div>
+                            </div>
+                            <div class="vstep-status" id="vst4">—</div>
+                        </div>
+                    </div>
+
+                    <!-- Success panel (hidden until done) -->
+                    <div id="idVerifyResult" style="display:none">
+                        <div class="verify-success-panel">
+                            <div class="success-icon-big">✅</div>
+                            <div class="success-text">सबै प्रमाणीकरण सफल भयो<br>गेट खुल्दैछ — भित्र प्रवेश गर्नुहोस्
+                            </div>
+                            <div class="success-sub">CLEARANCE GRANTED · GATE OPEN</div>
+                            <button class="btn btn-gold" style="margin-top:4px;font-size:12px"
+                                onclick="completeID()">मतदान केन्द्र प्रवेश →</button>
+                        </div>
+                    </div>
+
+                    <!-- Start button -->
+                    <div id="idStartBtn" style="text-align:center;padding:8px 0">
+                        <button class="btn-police" onclick="startIDVerification()">
+                            <span>🔍</span> प्रमाणीकरण सुरु गर्नुहोस्
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- STEP 3: दुई मतपत्र — प्रत्यक्ष र समानुपातिक -->
+    <div class="booth-modal hidden" id="mBALLOT">
+        <div class="booth-panel" style="padding:16px 14px;max-height:92vh;overflow-y:auto">
+            <div class="progress-track" style="margin-bottom:10px">
+                <div class="prog-seg done"></div>
+                <div class="prog-seg done"></div>
+                <div class="prog-seg active"></div>
+                <div class="prog-seg"></div>
+                <div class="prog-seg"></div>
+            </div>
+            <div class="step-pill">चरण ३ / ६ — मत खसाल्नुहोस् (दुई मतपत्र)</div>
+
+            <!-- Tab bar -->
+            <div class="ballot-tab-bar">
+                <button id="tabPR" class="ballot-tab active" onclick="switchTab('pr')">
+                    🔴 प्रत्यक्ष मतपत्र <span id="prDoneBadge" class="ballot-done-badge" style="display:none">✓
+                        भयो</span>
+                </button>
+                <button id="tabSP" class="ballot-tab inactive" onclick="switchTab('sp')" id="tabSP">
+                    🔵 समानुपातिक मतपत्र <span id="spDoneBadge" class="ballot-done-badge" style="display:none">✓
+                        भयो</span>
+                </button>
+            </div>
+
+            <!-- ══════ प्रत्यक्ष BALLOT (RED) ══════ -->
+            <div id="panelPR">
+                <div class="ballot ballot-red">
+                    <div class="b-hdr b-hdr-red">निर्वाचन आयोग, नेपाल &nbsp;•&nbsp; प्रत्यक्ष निर्वाचन मतपत्र</div>
+                    <div class="b-title">
+                        प्रतिनिधिसभा सदस्य निर्वाचन, २०८२<br>
+                        निर्वाचन क्षेत्र नं. ३, काठमाडौं<br>
+                        <span style="font-size:10px;font-family:'Share Tech Mono',monospace;color:#999">फागुन २१, २०८२
+                            बि.सं.</span>
+                    </div>
+                    <div class="b-instr">निर्देशन: आफ्नो रोजाइको उम्मेदवारको चिन्हको दाँयाको बिन्दुकार बक्समा आधिकारिक
+                        छाप (✕) एक पटक मात्र लगाउनुहोस्।</div>
+
+                    <!-- Row 1: Police Cap / टोपी लगाएको मान्छे -->
+                    <div class="cand" id="pr1" onclick="stampPR(1)">
+                        <div class="c-num">१</div>
+                        <div class="c-sym"><svg width="38" height="38" viewBox="0 0 38 38" fill="none" stroke="#111"
+                                stroke-width="1.8">
+                                <rect x="8" y="14" width="22" height="5" rx="1" />
+                                <path d="M10 14 Q19 4 28 14" />
+                                <rect x="11" y="19" width="16" height="10" rx="1" />
+                                <line x1="5" y1="19" x2="33" y2="19" />
+                                <line x1="19" y1="29" x2="19" y2="34" />
+                                <line x1="14" y1="34" x2="24" y2="34" />
+                            </svg></div>
+                        <div class="c-info">
+                            <div class="c-name">हरि प्रसाद श्रेष्ठ</div>
+                            <div class="c-party">नेकपा (एकीकृत समाजवादी)</div>
+                            <div class="c-sym-lbl">चिन्ह: टोपी लगाएको व्यक्ति</div>
+                        </div>
+                        <div class="stamp-box">
+                            <div class="stamp-mark">卐</div>
+                        </div>
+                    </div>
+
+                    <!-- Row 2: Cake / केक -->
+                    <div class="cand" id="pr2" onclick="stampPR(2)">
+                        <div class="c-num">२</div>
+                        <div class="c-sym"><svg width="38" height="38" viewBox="0 0 38 38" fill="none" stroke="#111"
+                                stroke-width="1.8">
+                                <rect x="6" y="20" width="26" height="12" rx="2" />
+                                <path d="M6 20 Q10 14 19 16 Q28 14 32 20" />
+                                <line x1="13" y1="20" x2="13" y2="13" />
+                                <circle cx="13" cy="11" r="2" fill="#111" />
+                                <line x1="19" y1="20" x2="19" y2="11" />
+                                <circle cx="19" cy="9" r="2" fill="#111" />
+                                <line x1="25" y1="20" x2="25" y2="13" />
+                                <circle cx="25" cy="11" r="2" fill="#111" />
+                                <line x1="6" y1="26" x2="32" y2="26" />
+                            </svg></div>
+                        <div class="c-info">
+                            <div class="c-name">कमला थापा मगर</div>
+                            <div class="c-party">नेपाली काँग्रेस</div>
+                            <div class="c-sym-lbl">चिन्ह: केक</div>
+                        </div>
+                        <div class="stamp-box">
+                            <div class="stamp-mark">卐</div>
+                        </div>
+                    </div>
+
+                    <!-- Row 3: Peas / मटर -->
+                    <div class="cand" id="pr3" onclick="stampPR(3)">
+                        <div class="c-num">३</div>
+                        <div class="c-sym"><svg width="38" height="38" viewBox="0 0 38 38" fill="none" stroke="#111"
+                                stroke-width="1.8">
+                                <path d="M6 22 Q8 10 19 10 Q30 10 32 22 Q28 26 19 26 Q10 26 6 22Z" />
+                                <circle cx="13" cy="19" r="3" fill="#111" opacity="0.7" />
+                                <circle cx="19" cy="18" r="3" fill="#111" opacity="0.7" />
+                                <circle cx="25" cy="19" r="3" fill="#111" opacity="0.7" />
+                                <path d="M19 10 Q22 6 26 8" />
+                            </svg></div>
+                        <div class="c-info">
+                            <div class="c-name">दीपक मगर</div>
+                            <div class="c-party">राष्ट्रिय स्वतन्त्र पार्टी</div>
+                            <div class="c-sym-lbl">चिन्ह: मटर</div>
+                        </div>
+                        <div class="stamp-box">
+                            <div class="stamp-mark">卐</div>
+                        </div>
+                    </div>
+
+                    <!-- Row 4: Bear / भालु -->
+                    <div class="cand" id="pr4" onclick="stampPR(4)">
+                        <div class="c-num">४</div>
+                        <div class="c-sym"><svg width="38" height="38" viewBox="0 0 38 38" fill="none" stroke="#111"
+                                stroke-width="1.8">
+                                <ellipse cx="19" cy="22" rx="12" ry="9" />
+                                <circle cx="19" cy="13" r="6" />
+                                <circle cx="12" cy="9" r="3" />
+                                <circle cx="26" cy="9" r="3" />
+                                <circle cx="16" cy="13" r="1.2" fill="#111" />
+                                <circle cx="22" cy="13" r="1.2" fill="#111" />
+                                <ellipse cx="19" cy="16" rx="3" ry="2" />
+                            </svg></div>
+                        <div class="c-info">
+                            <div class="c-name">अनिता राई गुरुङ</div>
+                            <div class="c-party">जनजाति समाजवादी पार्टी</div>
+                            <div class="c-sym-lbl">चिन्ह: भालु</div>
+                        </div>
+                        <div class="stamp-box">
+                            <div class="stamp-mark">卐</div>
+                        </div>
+                    </div>
+
+                    <!-- Row 5: Cookie / बिस्कुट -->
+                    <div class="cand" id="pr5" onclick="stampPR(5)">
+                        <div class="c-num">५</div>
+                        <div class="c-sym"><svg width="38" height="38" viewBox="0 0 38 38" fill="none" stroke="#111"
+                                stroke-width="1.8">
+                                <circle cx="19" cy="19" r="13" />
+                                <circle cx="14" cy="15" r="2" fill="#111" opacity="0.6" />
+                                <circle cx="23" cy="14" r="1.5" fill="#111" opacity="0.6" />
+                                <circle cx="24" cy="23" r="2" fill="#111" opacity="0.6" />
+                                <circle cx="15" cy="24" r="1.5" fill="#111" opacity="0.6" />
+                                <circle cx="19" cy="19" r="1.5" fill="#111" opacity="0.6" />
+                            </svg></div>
+                        <div class="c-info">
+                            <div class="c-name">प्रकाश बस्नेत</div>
+                            <div class="c-party">स्वतन्त्र उम्मेदवार</div>
+                            <div class="c-sym-lbl">चिन्ह: बिस्कुट</div>
+                        </div>
+                        <div class="stamp-box">
+                            <div class="stamp-mark">卐</div>
+                        </div>
+                    </div>
+
+                    <!-- Row 6: Astronaut / अन्तरिक्ष यात्री -->
+                    <div class="cand" id="pr6" onclick="stampPR(6)">
+                        <div class="c-num">६</div>
+                        <div class="c-sym"><svg width="38" height="38" viewBox="0 0 38 38" fill="none" stroke="#111"
+                                stroke-width="1.8">
+                                <circle cx="19" cy="11" r="7" />
+                                <circle cx="19" cy="11" r="4" stroke-dasharray="2,1" />
+                                <rect x="10" y="17" width="18" height="14" rx="4" />
+                                <line x1="6" y1="20" x2="10" y2="22" />
+                                <line x1="32" y1="20" x2="28" y2="22" />
+                                <line x1="13" y1="31" x2="13" y2="36" />
+                                <line x1="25" y1="31" x2="25" y2="36" />
+                            </svg></div>
+                        <div class="c-info">
+                            <div class="c-name">सुनिता गुरुङ</div>
+                            <div class="c-party">स्वतन्त्र उम्मेदवार</div>
+                            <div class="c-sym-lbl">चिन्ह: अन्तरिक्ष यात्री</div>
+                        </div>
+                        <div class="stamp-box">
+                            <div class="stamp-mark">卐</div>
+                        </div>
+                    </div>
+
+                    <div class="b-serial">मतपत्र क्र.: RP-२०८२-३-०२८४७ &nbsp;|&nbsp; केन्द्र: WD-04-KTMG3</div>
+                    <div class="b-sig">निर्वाचन अधिकृत: <em>र.क. अधिकारी</em></div>
+                </div>
+                <div style="text-align:center;margin-top:8px">
+                    <div id="prPending"
+                        style="font-family:'Tiro Devanagari Hindi',serif;font-size:12px;color:#907050;padding:8px">
+                        माथिका उम्मेदवारमध्ये एकलाई छाप लगाउनुहोस् ↑</div>
+                    <button class="btn btn-gold hidden" id="btnPRNext" onclick="switchTab('sp')">समानुपातिक मतपत्रमा
+                        जानुहोस् →</button>
+                </div>
+            </div>
+
+            <!-- ══════ समानुपातिक BALLOT (BLUE) ══════ -->
+            <div id="panelSP" style="display:none">
+                <div class="ballot ballot-blue">
+                    <div class="b-hdr b-hdr-blue">निर्वाचन आयोग, नेपाल &nbsp;•&nbsp; समानुपातिक निर्वाचन मतपत्र</div>
+                    <div class="b-title">
+                        प्रतिनिधिसभा सदस्य निर्वाचन, २०८२ &nbsp;•&nbsp; समानुपातिक निर्वाचन प्रणाली<br>
+                        <span style="font-size:10px;font-family:'Share Tech Mono',monospace;color:#888">फागुन २१, २०८२
+                            &nbsp;|&nbsp; एउटा कोठाभित्र मात्र मतसंकेत (✕) गर्नुहोस्</span>
+                    </div>
+                    <div class="b-instr">निर्देशन: आफ्नो रोजाइको दलको चिन्हको छेउको बक्समा आधिकारिक छाप (✕) एक पटक मात्र
+                        लगाउनुहोस्।</div>
+
+                    <div class="sp-grid">
+
+                        <!-- 1. Sun — नेपाली काँग्रेस -->
+                        <div class="cand sp-cand" id="sp1" onclick="stampSP(1)">
+                            <div class="c-num">१</div>
+                            <div class="c-sym sp-sym"><svg width="34" height="34" viewBox="0 0 34 34" fill="none"
+                                    stroke="#111" stroke-width="1.8">
+                                    <circle cx="17" cy="17" r="7" />
+                                    <line x1="17" y1="1" x2="17" y2="7" />
+                                    <line x1="17" y1="27" x2="17" y2="33" />
+                                    <line x1="1" y1="17" x2="7" y2="17" />
+                                    <line x1="27" y1="17" x2="33" y2="17" />
+                                    <line x1="5" y1="5" x2="9" y2="9" />
+                                    <line x1="25" y1="25" x2="29" y2="29" />
+                                    <line x1="29" y1="5" x2="25" y2="9" />
+                                    <line x1="5" y1="29" x2="9" y2="25" />
+                                </svg></div>
+                            <div class="c-info">
+                                <div class="c-name" style="font-size:10px">नेपाली काँग्रेस</div>
+                                <div class="c-sym-lbl">सूर्य</div>
+                            </div>
+                            <div class="stamp-box sp-box">
+                                <div class="stamp-mark">卐</div>
+                            </div>
+                        </div>
+
+                        <!-- 2. Tree — CPN-UML -->
+                        <div class="cand sp-cand" id="sp2" onclick="stampSP(2)">
+                            <div class="c-num">२</div>
+                            <div class="c-sym sp-sym"><svg width="34" height="34" viewBox="0 0 34 34" fill="none"
+                                    stroke="#111" stroke-width="1.8">
+                                    <line x1="17" y1="28" x2="17" y2="16" />
+                                    <line x1="10" y1="30" x2="24" y2="30" />
+                                    <ellipse cx="17" cy="12" rx="10" ry="8" />
+                                    <ellipse cx="11" cy="15" rx="6" ry="5" />
+                                    <ellipse cx="23" cy="15" rx="6" ry="5" />
+                                </svg></div>
+                            <div class="c-info">
+                                <div class="c-name" style="font-size:10px">नेकपा (एमाले)</div>
+                                <div class="c-sym-lbl">रूख</div>
+                            </div>
+                            <div class="stamp-box sp-box">
+                                <div class="stamp-mark">卐</div>
+                            </div>
+                        </div>
+
+                        <!-- 3. Hammer & Sickle in circle — नेकपा माओवादी -->
+                        <div class="cand sp-cand" id="sp3" onclick="stampSP(3)">
+                            <div class="c-num">३</div>
+                            <div class="c-sym sp-sym"><svg width="34" height="34" viewBox="0 0 34 34" fill="none"
+                                    stroke="#111" stroke-width="1.8">
+                                    <circle cx="17" cy="17" r="14" />
+                                    <path d="M10 24 Q9 17 15 13 Q19 11 21 7" stroke-width="2.2" />
+                                    <line x1="21" y1="7" x2="25" y2="11" stroke-width="2" />
+                                    <line x1="17" y1="20" x2="24" y2="27" stroke-width="2.2" />
+                                    <line x1="19" y1="22" x2="13" y2="16" stroke-width="1.5" />
+                                </svg></div>
+                            <div class="c-info">
+                                <div class="c-name" style="font-size:10px">नेकपा (माओवादी)</div>
+                                <div class="c-sym-lbl">हँसिया-हथौडा</div>
+                            </div>
+                            <div class="stamp-box sp-box">
+                                <div class="stamp-mark">卐</div>
+                            </div>
+                        </div>
+
+                        <!-- 4. Umbrella — राप्रपा -->
+                        <div class="cand sp-cand" id="sp4" onclick="stampSP(4)">
+                            <div class="c-num">४</div>
+                            <div class="c-sym sp-sym"><svg width="34" height="34" viewBox="0 0 34 34" fill="none"
+                                    stroke="#111" stroke-width="1.8">
+                                    <path d="M4 18 Q17 2 30 18" />
+                                    <line x1="17" y1="18" x2="17" y2="30" />
+                                    <path d="M17 30 Q21 30 21 26" stroke-width="1.8" />
+                                    <line x1="4" y1="18" x2="4" y2="20" />
+                                    <line x1="30" y1="18" x2="30" y2="20" />
+                                    <path d="M4 20 Q4 18 4 18" />
+                                </svg></div>
+                            <div class="c-info">
+                                <div class="c-name" style="font-size:10px">राप्रपा</div>
+                                <div class="c-sym-lbl">छाता</div>
+                            </div>
+                            <div class="stamp-box sp-box">
+                                <div class="stamp-mark">卐</div>
+                            </div>
+                        </div>
+
+                        <!-- 5. Plough — एकीकृत समाजवादी -->
+                        <div class="cand sp-cand" id="sp5" onclick="stampSP(5)">
+                            <div class="c-num">५</div>
+                            <div class="c-sym sp-sym"><svg width="34" height="34" viewBox="0 0 34 34" fill="none"
+                                    stroke="#111" stroke-width="1.8">
+                                    <path d="M3 26 L18 12 L30 12" />
+                                    <path d="M3 26 L7 22 L18 12" />
+                                    <line x1="30" y1="8" x2="30" y2="18" />
+                                    <path d="M18 12 Q14 16 13 20 L3 26" />
+                                </svg></div>
+                            <div class="c-info">
+                                <div class="c-name" style="font-size:10px">नेकपा (एकीकृत समाजवादी)</div>
+                                <div class="c-sym-lbl">हलो</div>
+                            </div>
+                            <div class="stamp-box sp-box">
+                                <div class="stamp-mark">卐</div>
+                            </div>
+                        </div>
+
+                        <!-- 6. Glass/Mug — जसपा -->
+                        <div class="cand sp-cand" id="sp6" onclick="stampSP(6)">
+                            <div class="c-num">६</div>
+                            <div class="c-sym sp-sym"><svg width="34" height="34" viewBox="0 0 34 34" fill="none"
+                                    stroke="#111" stroke-width="1.8">
+                                    <rect x="9" y="8" width="16" height="20" rx="1" />
+                                    <path d="M25 12 Q30 12 30 17 Q30 22 25 22" />
+                                    <line x1="9" y1="14" x2="25" y2="14" />
+                                </svg></div>
+                            <div class="c-info">
+                                <div class="c-name" style="font-size:10px">जनता समाजवादी पार्टी</div>
+                                <div class="c-sym-lbl">गिलास</div>
+                            </div>
+                            <div class="stamp-box sp-box">
+                                <div class="stamp-mark">卐</div>
+                            </div>
+                        </div>
+
+                        <!-- 7. Bicycle — लोतान्त्रिक समाजवादी -->
+                        <div class="cand sp-cand" id="sp7" onclick="stampSP(7)">
+                            <div class="c-num">७</div>
+                            <div class="c-sym sp-sym"><svg width="34" height="34" viewBox="0 0 34 34" fill="none"
+                                    stroke="#111" stroke-width="1.8">
+                                    <circle cx="9" cy="23" r="7" />
+                                    <circle cx="25" cy="23" r="7" />
+                                    <polyline points="9,23 14,11 20,11 25,23" />
+                                    <polyline points="14,11 17,23" />
+                                    <polyline points="20,11 25,16" />
+                                </svg></div>
+                            <div class="c-info">
+                                <div class="c-name" style="font-size:10px">लोकतान्त्रिक समाजवादी</div>
+                                <div class="c-sym-lbl">साइकल</div>
+                            </div>
+                            <div class="stamp-box sp-box">
+                                <div class="stamp-mark">卐</div>
+                            </div>
+                        </div>
+
+                        <!-- 8. Pen — राष्ट्रिय जनमोर्चा -->
+                        <div class="cand sp-cand" id="sp8" onclick="stampSP(8)">
+                            <div class="c-num">८</div>
+                            <div class="c-sym sp-sym"><svg width="34" height="34" viewBox="0 0 34 34" fill="none"
+                                    stroke="#111" stroke-width="1.8">
+                                    <rect x="14" y="5" width="6" height="20" rx="1" />
+                                    <polygon points="14,25 20,25 17,32" />
+                                    <line x1="14" y1="10" x2="20" y2="10" />
+                                    <rect x="14" y="5" width="6" height="5" fill="#333" opacity="0.4" />
+                                </svg></div>
+                            <div class="c-info">
+                                <div class="c-name" style="font-size:10px">राष्ट्रिय जनमोर्चा</div>
+                                <div class="c-sym-lbl">कलम</div>
+                            </div>
+                            <div class="stamp-box sp-box">
+                                <div class="stamp-mark">卐</div>
+                            </div>
+                        </div>
+
+                        <!-- 9. Lotus — राष्ट्रिय स्वतन्त्र पार्टी -->
+                        <div class="cand sp-cand" id="sp9" onclick="stampSP(9)">
+                            <div class="c-num">९</div>
+                            <div class="c-sym sp-sym"><svg width="34" height="34" viewBox="0 0 34 34" fill="none"
+                                    stroke="#111" stroke-width="1.8">
+                                    <path d="M17 28 Q6 20 6 12 Q11 12 17 20 Q23 12 28 12 Q28 20 17 28Z" />
+                                    <path d="M17 28 Q9 18 3 18" />
+                                    <path d="M17 28 Q25 18 31 18" />
+                                    <line x1="17" y1="28" x2="17" y2="33" />
+                                </svg></div>
+                            <div class="c-info">
+                                <div class="c-name" style="font-size:10px">राष्ट्रिय स्वतन्त्र पार्टी</div>
+                                <div class="c-sym-lbl">कमल</div>
+                            </div>
+                            <div class="stamp-box sp-box">
+                                <div class="stamp-mark">卐</div>
+                            </div>
+                        </div>
+
+                        <!-- 10. Horse — नागरिक उन्मुक्ति -->
+                        <div class="cand sp-cand" id="sp10" onclick="stampSP(10)">
+                            <div class="c-num">१०</div>
+                            <div class="c-sym sp-sym"><svg width="34" height="34" viewBox="0 0 34 34" fill="none"
+                                    stroke="#111" stroke-width="1.8">
+                                    <path d="M6 28 L8 18 Q10 12 16 10 Q22 8 26 12 L28 16 Q30 12 32 10" />
+                                    <path d="M8 18 Q6 22 6 28" />
+                                    <path d="M16 22 L14 28 L18 28" />
+                                    <path d="M22 20 L22 28 L26 28" />
+                                    <circle cx="26" cy="11" r="2" />
+                                </svg></div>
+                            <div class="c-info">
+                                <div class="c-name" style="font-size:10px">नागरिक उन्मुक्ति पार्टी</div>
+                                <div class="c-sym-lbl">घोडा</div>
+                            </div>
+                            <div class="stamp-box sp-box">
+                                <div class="stamp-mark">卐</div>
+                            </div>
+                        </div>
+
+                        <!-- 11. Star+Sickle — राष्ट्रिय जनता पार्टी -->
+                        <div class="cand sp-cand" id="sp11" onclick="stampSP(11)">
+                            <div class="c-num">११</div>
+                            <div class="c-sym sp-sym"><svg width="34" height="34" viewBox="0 0 34 34" fill="none"
+                                    stroke="#111" stroke-width="1.8">
+                                    <polygon points="17,4 19,12 27,12 21,17 23,25 17,20 11,25 13,17 7,12 15,12"
+                                        fill="none" />
+                                    <path d="M20 26 Q22 20 26 20 Q26 24 22 26" stroke-width="1.5" />
+                                </svg></div>
+                            <div class="c-info">
+                                <div class="c-name" style="font-size:10px">राष्ट्रिय जनता पार्टी</div>
+                                <div class="c-sym-lbl">तारा-हँसिया</div>
+                            </div>
+                            <div class="stamp-box sp-box">
+                                <div class="stamp-mark">卐</div>
+                            </div>
+                        </div>
+
+                        <!-- 12. Rooster — स्वतन्त्र पार्टी -->
+                        <div class="cand sp-cand" id="sp12" onclick="stampSP(12)">
+                            <div class="c-num">१२</div>
+                            <div class="c-sym sp-sym"><svg width="34" height="34" viewBox="0 0 34 34" fill="none"
+                                    stroke="#111" stroke-width="1.8">
+                                    <ellipse cx="19" cy="22" rx="8" ry="7" />
+                                    <circle cx="19" cy="13" r="5" />
+                                    <path d="M17 9 Q13 5 11 8 Q13 9 14 10" />
+                                    <path d="M22 11 Q26 9 27 12" />
+                                    <path d="M14 28 L12 33" />
+                                    <path d="M22 28 L24 33" />
+                                    <path d="M27 19 L31 17 L30 22" />
+                                </svg></div>
+                            <div class="c-info">
+                                <div class="c-name" style="font-size:10px">स्वतन्त्र पार्टी नेपाल</div>
+                                <div class="c-sym-lbl">भाले</div>
+                            </div>
+                            <div class="stamp-box sp-box">
+                                <div class="stamp-mark">卐</div>
+                            </div>
+                        </div>
+
+                        <!-- 13. House — जनमत पार्टी -->
+                        <div class="cand sp-cand" id="sp13" onclick="stampSP(13)">
+                            <div class="c-num">१३</div>
+                            <div class="c-sym sp-sym"><svg width="34" height="34" viewBox="0 0 34 34" fill="none"
+                                    stroke="#111" stroke-width="1.8">
+                                    <polygon points="17,5 30,16 4,16" />
+                                    <rect x="7" y="16" width="20" height="14" />
+                                    <rect x="14" y="22" width="6" height="8" />
+                                    <rect x="9" y="18" width="5" height="5" />
+                                    <rect x="20" y="18" width="5" height="5" />
+                                </svg></div>
+                            <div class="c-info">
+                                <div class="c-name" style="font-size:10px">जनमत पार्टी</div>
+                                <div class="c-sym-lbl">घर</div>
+                            </div>
+                            <div class="stamp-box sp-box">
+                                <div class="stamp-mark">卐</div>
+                            </div>
+                        </div>
+
+                        <!-- 14. Vase/Kalash — हिन्दु स्वयंसेवक संघ -->
+                        <div class="cand sp-cand" id="sp14" onclick="stampSP(14)">
+                            <div class="c-num">१४</div>
+                            <div class="c-sym sp-sym"><svg width="34" height="34" viewBox="0 0 34 34" fill="none"
+                                    stroke="#111" stroke-width="1.8">
+                                    <path d="M12 30 Q8 22 8 16 Q8 8 17 8 Q26 8 26 16 Q26 22 22 30Z" />
+                                    <line x1="10" y1="30" x2="24" y2="30" />
+                                    <path d="M12 16 Q10 12 12 10" />
+                                    <line x1="11" y1="20" x2="23" y2="20" />
+                                    <path d="M15 8 Q17 3 19 8" />
+                                </svg></div>
+                            <div class="c-info">
+                                <div class="c-name" style="font-size:10px">हिन्दू स्वयंसेवक</div>
+                                <div class="c-sym-lbl">कलश</div>
+                            </div>
+                            <div class="stamp-box sp-box">
+                                <div class="stamp-mark">卐</div>
+                            </div>
+                        </div>
+
+                        <!-- 15. Wheel/Chakra — प्रजातन्त्र समाजवादी -->
+                        <div class="cand sp-cand" id="sp15" onclick="stampSP(15)">
+                            <div class="c-num">१५</div>
+                            <div class="c-sym sp-sym"><svg width="34" height="34" viewBox="0 0 34 34" fill="none"
+                                    stroke="#111" stroke-width="1.8">
+                                    <circle cx="17" cy="17" r="13" />
+                                    <circle cx="17" cy="17" r="4" />
+                                    <line x1="17" y1="4" x2="17" y2="13" />
+                                    <line x1="17" y1="21" x2="17" y2="30" />
+                                    <line x1="4" y1="17" x2="13" y2="17" />
+                                    <line x1="21" y1="17" x2="30" y2="17" />
+                                    <line x1="7" y1="7" x2="13" y2="13" />
+                                    <line x1="21" y1="21" x2="27" y2="27" />
+                                    <line x1="27" y1="7" x2="21" y2="13" />
+                                    <line x1="7" y1="27" x2="13" y2="21" />
+                                </svg></div>
+                            <div class="c-info">
+                                <div class="c-name" style="font-size:10px">प्रजातन्त्र समाजवादी</div>
+                                <div class="c-sym-lbl">धर्मचक्र</div>
+                            </div>
+                            <div class="stamp-box sp-box">
+                                <div class="stamp-mark">卐</div>
+                            </div>
+                        </div>
+
+                        <!-- 16. Star (black) — नेपाल मजदुर किसान -->
+                        <div class="cand sp-cand" id="sp16" onclick="stampSP(16)">
+                            <div class="c-num">१६</div>
+                            <div class="c-sym sp-sym"><svg width="34" height="34" viewBox="0 0 34 34">
+                                    <polygon points="17,3 20,13 31,13 22,20 25,30 17,23 9,30 12,20 3,13 14,13"
+                                        fill="#111" stroke="#111" stroke-width="1" />
+                                </svg></div>
+                            <div class="c-info">
+                                <div class="c-name" style="font-size:10px">नेपाल मजदुर किसान</div>
+                                <div class="c-sym-lbl">ठूलो तारा</div>
+                            </div>
+                            <div class="stamp-box sp-box">
+                                <div class="stamp-mark">卐</div>
+                            </div>
+                        </div>
+
+                        <!-- 17. Bell — लोकतान्त्रिक जनता -->
+                        <div class="cand sp-cand" id="sp17" onclick="stampSP(17)">
+                            <div class="c-num">१७</div>
+                            <div class="c-sym sp-sym"><svg width="34" height="34" viewBox="0 0 34 34" fill="none"
+                                    stroke="#111" stroke-width="1.8">
+                                    <path d="M10 26 Q8 14 17 8 Q26 14 24 26Z" />
+                                    <line x1="6" y1="26" x2="28" y2="26" stroke-width="2" />
+                                    <circle cx="17" cy="30" r="3" />
+                                    <line x1="17" y1="4" x2="17" y2="8" stroke-width="1.5" />
+                                </svg></div>
+                            <div class="c-info">
+                                <div class="c-name" style="font-size:10px">लोकतान्त्रिक जनता</div>
+                                <div class="c-sym-lbl">घण्टी</div>
+                            </div>
+                            <div class="stamp-box sp-box">
+                                <div class="stamp-mark">卐</div>
+                            </div>
+                        </div>
+
+                        <!-- 18. Heart — समता पार्टी -->
+                        <div class="cand sp-cand" id="sp18" onclick="stampSP(18)">
+                            <div class="c-num">१८</div>
+                            <div class="c-sym sp-sym"><svg width="34" height="34" viewBox="0 0 34 34" fill="none"
+                                    stroke="#111" stroke-width="1.8">
+                                    <path
+                                        d="M17 28 Q4 20 4 12 Q4 6 10 6 Q14 6 17 10 Q20 6 24 6 Q30 6 30 12 Q30 20 17 28Z" />
+                                </svg></div>
+                            <div class="c-info">
+                                <div class="c-name" style="font-size:10px">समता पार्टी</div>
+                                <div class="c-sym-lbl">मुटु</div>
+                            </div>
+                            <div class="stamp-box sp-box">
+                                <div class="stamp-mark">卐</div>
+                            </div>
+                        </div>
+
+                        <!-- 19. Guitar — युवा पार्टी -->
+                        <div class="cand sp-cand" id="sp19" onclick="stampSP(19)">
+                            <div class="c-num">१९</div>
+                            <div class="c-sym sp-sym"><svg width="34" height="34" viewBox="0 0 34 34" fill="none"
+                                    stroke="#111" stroke-width="1.8">
+                                    <circle cx="17" cy="24" r="8" />
+                                    <rect x="14" y="5" width="6" height="12" rx="1" />
+                                    <line x1="12" y1="5" x2="22" y2="5" />
+                                    <line x1="13" y1="7" x2="13" y2="10" />
+                                    <line x1="17" y1="6" x2="17" y2="10" />
+                                    <line x1="21" y1="7" x2="21" y2="10" />
+                                    <line x1="17" y1="17" x2="17" y2="16" />
+                                    <line x1="14" y1="24" x2="20" y2="24" />
+                                </svg></div>
+                            <div class="c-info">
+                                <div class="c-name" style="font-size:10px">युवा जागृति पार्टी</div>
+                                <div class="c-sym-lbl">गितार</div>
+                            </div>
+                            <div class="stamp-box sp-box">
+                                <div class="stamp-mark">卐</div>
+                            </div>
+                        </div>
+
+                        <!-- 20. Trident — हिन्दू राष्ट्र -->
+                        <div class="cand sp-cand" id="sp20" onclick="stampSP(20)">
+                            <div class="c-num">२०</div>
+                            <div class="c-sym sp-sym"><svg width="34" height="34" viewBox="0 0 34 34" fill="none"
+                                    stroke="#111" stroke-width="2">
+                                    <line x1="17" y1="30" x2="17" y2="6" />
+                                    <path d="M10 10 Q10 6 14 6 Q14 10 17 12" />
+                                    <path d="M24 10 Q24 6 20 6 Q20 10 17 12" />
+                                    <line x1="10" y1="10" x2="10" y2="16" />
+                                    <line x1="24" y1="10" x2="24" y2="16" />
+                                    <line x1="12" y1="28" x2="22" y2="28" />
+                                </svg></div>
+                            <div class="c-info">
+                                <div class="c-name" style="font-size:10px">हिन्दू राष्ट्र पार्टी</div>
+                                <div class="c-sym-lbl">त्रिशूल</div>
+                            </div>
+                            <div class="stamp-box sp-box">
+                                <div class="stamp-mark">卐</div>
+                            </div>
+                        </div>
+
+                    </div><!-- end sp-grid -->
+
+                    <div class="b-serial" style="background:#f5f8ff">मतपत्र क्र.: SP-२०८२-०२८४७ &nbsp;|&nbsp; केन्द्र:
+                        WD-04-KTMG3</div>
+                    <div class="b-sig">निर्वाचन अधिकृत: <em>र.क. अधिकारी</em></div>
+                </div>
+                <div style="text-align:center;margin-top:8px">
+                    <div id="spPending"
+                        style="font-family:'Tiro Devanagari Hindi',serif;font-size:12px;color:#907050;padding:8px">
+                        माथिका दलमध्ये एकलाई छाप लगाउनुहोस् ↑</div>
+                    <button class="btn btn-gold hidden" id="btnSPNext" onclick="completedBothBallots()">मतपत्र तह
+                        लगाउनुहोस् →</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- STEP 4: Fold -->
+    <div class="booth-modal hidden" id="mFOLD">
+        <div class="booth-panel" style="text-align:center">
+            <div class="progress-track">
+                <div class="prog-seg done"></div>
+                <div class="prog-seg done"></div>
+                <div class="prog-seg done"></div>
+                <div class="prog-seg active"></div>
+                <div class="prog-seg"></div>
+            </div>
+            <div class="step-pill">चरण ४ / ६ — गोपनीयता कायम राख्न तह लगाउनुहोस्</div>
+            <div class="booth-h2">कसरी तह लगाउने?</div>
+            <p
+                style="font-family:'Tiro Devanagari Hindi',serif;font-size:14px;color:#8a7050;line-height:1.9;max-width:380px;margin:0 auto 8px">
+                सही तरिकाले तह लगाउँदा गोपनीयता कायम रहन्छ र मसी धब्बा हुँदैन। गलत तरिकाले मसी फैलिन्छ र मत अमान्य
+                हुन्छ।
+            </p>
+            <div class="fold-vis">
+                <div class="fold-demo fold-v" onclick="completedFold(true)">
+                    <div class="fold-paper" style="width:62px;height:88px">
+                        <div class="fl-v"></div>
+                    </div>
+                    <div class="fold-label good">↕ ठाडो तह</div>
+                    <div style="font-family:'Tiro Devanagari Hindi',serif;font-size:11px;color:#6bcf9f;margin-top:3px">
+                        सही ✓</div>
+                </div>
+                <div style="font-family:'Share Tech Mono',monospace;font-size:20px;color:#333;align-self:center">VS
+                </div>
+                <div class="fold-demo fold-h" onclick="completedFold(false)">
+                    <div class="fold-paper" style="width:88px;height:62px">
+                        <div class="fl-h"></div>
+                    </div>
+                    <div class="fold-label bad">↔ तेर्सो तह</div>
+                    <div style="font-family:'Tiro Devanagari Hindi',serif;font-size:11px;color:#f08080;margin-top:3px">
+                        मसी धब्बा हुन्छ ✗</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- STEP 5: Ballot Box -->
+    <div class="booth-modal hidden" id="mBOX">
+        <div class="booth-panel" style="text-align:center">
+            <div class="progress-track">
+                <div class="prog-seg done"></div>
+                <div class="prog-seg done"></div>
+                <div class="prog-seg done"></div>
+                <div class="prog-seg done"></div>
+                <div class="prog-seg active"></div>
+            </div>
+            <div class="step-pill">चरण ५ / ६ — मतपत्र हाल्नुहोस्</div>
+            <div class="booth-h2">सही मतपेटिका छान्नुहोस्</div>
+            <p
+                style="font-family:'Tiro Devanagari Hindi',serif;font-size:14px;color:#8a7050;line-height:1.9;max-width:380px;margin:0 auto 4px">
+                तह लगाइएको मतपत्र <strong style="color:#6bcf9f">हरियो आधिकारिक पेटिका</strong> मा हाल्नुहोस्। खैरो
+                पेटिका खारेज/अमान्य मतपत्रका लागि मात्र हो।
+            </p>
+            <div class="box-scene">
+                <div class="ballot-box-ui official" onclick="dropBallot(true)">
+                    <div class="box-3d">
+                        <div class="box-top" style="background:linear-gradient(135deg,#164028,#2d6a4f)">
+                            <div class="box-slot"></div>
+                        </div>
+                        <div class="box-body"
+                            style="background:linear-gradient(180deg,#2d6a4f,#164028);border:2px solid #42a870">🗳️
+                        </div>
+                        <div class="box-shd"></div>
+                    </div>
+                    <div class="box-lbl" style="color:#52b888">आधिकारिक मतपेटिका</div>
+                    <div class="box-sub">प्रतिनिधिसभा निर्वाचन</div>
+                </div>
+                <div class="ballot-box-ui wrong" onclick="dropBallot(false)">
+                    <div class="box-3d">
+                        <div class="box-top" style="background:linear-gradient(135deg,#282828,#383838)">
+                            <div class="box-slot"></div>
+                        </div>
+                        <div class="box-body"
+                            style="background:linear-gradient(180deg,#383838,#202020);border:2px solid #686868">📦</div>
+                        <div class="box-shd"></div>
+                    </div>
+                    <div class="box-lbl" style="color:#686868">अमान्य मतपत्र</div>
+                    <div class="box-sub">खारेज / अमान्य मात्र</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- STEP 6: INK / Nail Coloring — LAST STEP -->
+    <div class="booth-modal hidden" id="mINK">
+        <div class="booth-panel">
+            <div class="progress-track">
+                <div class="prog-seg done"></div>
+                <div class="prog-seg done"></div>
+                <div class="prog-seg done"></div>
+                <div class="prog-seg done"></div>
+                <div class="prog-seg active" style="background:linear-gradient(90deg,#6020b0,#a040e0)"></div>
+            </div>
+            <div class="step-pill"
+                style="color:#c070ff;border-color:rgba(160,64,224,0.4);background:rgba(160,64,224,0.1)">चरण ६ / ६ — अमिट
+                मसी लगाउनुहोस्</div>
+            <div class="booth-h2">औंलामा मसी लगाउनुहोस्</div>
+            <p
+                style="font-family:'Tiro Devanagari Hindi',serif;font-size:14px;color:#8a7050;margin-bottom:16px;line-height:1.9">
+                दोहोरो मतदान रोक्न बायाँ हातको काकुल औंलामा अमिट मसी लगाइन्छ। यो मतदानको अन्तिम चरण हो। <strong
+                    style="color:#d4c8a0">तलको मसी प्याडमा थिच्नुहोस्।</strong>
+            </p>
+            <!-- 3D illustrated ink interaction -->
+            <div class="ink-stage" style="position:relative">
+                <canvas id="inkCanvas" width="340" height="260" onclick="applyInk()"></canvas>
+                <div class="ink-hint" id="inkHint">▼ मसी प्याडमा थिच्नुहोस्</div>
+                <div class="ink-burst" id="inkBurst"></div>
+            </div>
+            <div class="ink-result" id="inkResult">☝️ &nbsp;✓ बायाँ हातको काकुल औंलामा अमिट मसी सफलतापूर्वक लगाइयो</div>
+            <div style="text-align:center;margin-top:18px">
+                <button class="btn btn-gold hidden" id="btnInkNext" onclick="completedInk()">✅ मतदान सम्पन्न →</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== RESULT ===== -->
+    <div class="screen hidden" id="resultScreen">
+        <div class="screen-tag">फागुन २१, २०८२ — सिमुलेसन सम्पन्न</div>
+        <div class="result-ring" id="resRing">🗳️</div>
+        <div class="result-h" id="resTitle">तपाईंको मत प्रतिवेदन</div>
+        <div class="verdict-tag" id="resVerdict">—</div>
+        <div class="gold-line" style="margin-bottom:22px"></div>
+        <div class="report">
+            <div class="report-hdr">प्रमाणीकरण प्रतिवेदन</div>
+            <div id="reportItems"></div>
+        </div>
+        <div class="btn-row">
+            <button class="btn btn-gold" onclick="restartGame()">फेरि प्रयास गर्नुहोस्</button>
+            <button class="btn btn-ghost" onclick="fadeToScreen('titleScreen')">← बाहिर निस्कनुहोस्</button>
+        </div>
+    </div>
+
+</body>
+
+</html>
